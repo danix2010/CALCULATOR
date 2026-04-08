@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabaikin Calculator AI</title>
+    <meta name="description" content="AI калькулятор для решения уравнений, систем и неравенств">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Анимированные плавающие символы -->
+    <div class="floating-symbols" id="floating-symbols"></div>
+    
+    <!-- Контейнер уведомлений -->
+    <div id="notification-container"></div>
+    
+    <div class="container">
+        <!-- Упрощенная шапка -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+                <h1>Zabaikin Calculator AI</h1>
+            </div>
+            <div class="mode-indicator">
+                <span id="mode-indicator">Обычный режим</span>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Левая панель: Ввод и история -->
+            <section class="left-panel">
+                <!-- Ввод уравнения -->
+                <div class="card input-card">
+                    <h2><i class="fas fa-keyboard"></i> Введите уравнение</h2>
+                    
+                    <!-- Панель режимов -->
+                    <div class="mode-panel">
+                        <div class="mode-tabs">
+                            <button class="mode-tab active" data-mode="single">
+                                <i class="fas fa-equals"></i> Уравнение
+                            </button>
+                            <button class="mode-tab" data-mode="system">
+                                <i class="fas fa-th-large"></i> Система
+                            </button>
+                            <button class="mode-tab" data-mode="inequality">
+                                <i class="fas fa-not-equal"></i> Неравенство
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Поле ввода для одиночного уравнения -->
+                    <div class="input-group single-mode active">
+                        <div class="input-wrapper">
+                            <input type="text" 
+                                   id="single-equation-input" 
+                                   placeholder="Пример: 3(x+2) = 15 или 1/2 + 1/3"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    
+                    <!-- Поля ввода для системы уравнений -->
+                    <div class="input-group system-mode">
+                        <div class="system-controls">
+                            <button id="add-equation-btn" class="btn-secondary">
+                                <i class="fas fa-plus"></i> Добавить уравнение
+                            </button>
+                            <button id="remove-equation-btn" class="btn-secondary">
+                                <i class="fas fa-minus"></i> Удалить уравнение
+                            </button>
+                        </div>
+                        <div class="system-inputs" id="system-inputs">
+                            <div class="system-equation-input">
+                                <span class="equation-number">1.</span>
+                                <input type="text" 
+                                       class="system-equation" 
+                                       placeholder="2x + 3y = 8"
+                                       autocomplete="off">
+                            </div>
+                            <div class="system-equation-input">
+                                <span class="equation-number">2.</span>
+                                <input type="text" 
+                                       class="system-equation" 
+                                       placeholder="x - y = 1"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Поле ввода для неравенства -->
+                    <div class="input-group inequality-mode">
+                        <div class="input-wrapper">
+                            <input type="text" 
+                                   id="inequality-input" 
+                                   placeholder="Пример: x^2 > 4 или 2x + 3 ≤ 7"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    
+                    <!-- Дроби и быстрые примеры -->
+                    <div class="fractions-panel">
+                        <div class="fractions-section">
+                            <p>Дроби:</p>
+                            <div class="fraction-buttons">
+                                <button class="fraction-btn" data-frac="1/2">½</button>
+                                <button class="fraction-btn" data-frac="1/3">⅓</button>
+                                <button class="fraction-btn" data-frac="2/3">⅔</button>
+                                <button class="fraction-btn" data-frac="1/4">¼</button>
+                                <button class="fraction-btn" data-frac="3/4">¾</button>
+                                <button class="fraction-btn" data-frac="1/5">⅕</button>
+                            </div>
+                        </div>
+                        
+                        <div class="examples-section">
+                            <p>Примеры:</p>
+                            <div class="example-buttons">
+                                <button class="example-btn" data-type="single" data-expr="3(x+2) = 15">3(x+2)=15</button>
+                                <button class="example-btn" data-type="single" data-expr="x^2 - 4 = 0">x²-4=0</button>
+                                <button class="example-btn" data-type="single" data-expr="1/2 + 1/3">1/2+1/3</button>
+                                <button class="example-btn" data-type="system" data-expr='["2x + y = 5", "x - y = 1"]'>Система 2×2</button>
+                                <button class="example-btn" data-type="inequality" data-expr="x^2 > 4">x²>4</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Простая клавиатура -->
+                    <div class="simple-keyboard">
+                        <div class="keyboard-row">
+                            <button class="key-btn" data-key="^">^</button>
+                            <button class="key-btn" data-key="√">√</button>
+                            <button class="key-btn" data-key="(">(</button>
+                            <button class="key-btn" data-key=")">)</button>
+                            <button class="key-btn" data-key="π">π</button>
+                            <button class="key-btn" data-key=">">></button>
+                            <button class="key-btn" data-key="<"><</button>
+                        </div>
+                        <div class="keyboard-row">
+                            <button class="key-btn" data-key="1/2">½</button>
+                            <button class="key-btn" data-key="1/3">⅓</button>
+                            <button class="key-btn" data-key="2/3">⅔</button>
+                            <button class="key-btn" data-key="1/4">¼</button>
+                            <button class="key-btn" data-key="3/4">¾</button>
+                            <button class="key-btn" data-key="≥">≥</button>
+                            <button class="key-btn" data-key="≤">≤</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопки действий -->
+                    <div class="action-buttons">
+                        <button id="solve-btn" class="btn-solve">
+                            <i class="fas fa-robot"></i> Решить
+                        </button>
+                        <button class="btn-clear" id="clear-btn" title="Очистить">
+                            <i class="fas fa-times"></i> Очистить
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- История решений -->
+                <div class="card history-card">
+                    <div class="history-header">
+                        <h3><i class="fas fa-history"></i> История решений</h3>
+                        <button class="btn-clear-history" id="clear-history-btn" title="Очистить историю">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div id="history-list" class="history-list">
+                        <div class="empty-history">
+                            <i class="fas fa-clock"></i>
+                            <p>Здесь будут ваши решения</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Правая панель: Результат -->
+            <section class="right-panel">
+                <!-- Результат -->
+                <div class="card result-card">
+                    <div class="result-header">
+                        <h2><i class="fas fa-lightbulb"></i> Результат</h2>
+                        <div class="result-actions">
+                            <button class="btn-action" id="copy-result-btn" title="Копировать">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="btn-action" id="show-steps-btn" title="Показать шаги">
+                                <i class="fas fa-list-ol"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Загрузка -->
+                    <div id="loading" class="loading hidden">
+                        <div class="spinner"></div>
+                        <p>AI решает уравнение...</p>
+                    </div>
+                    
+                    <!-- Область результатов -->
+                    <div id="result-area">
+                        <div class="equation-display-section">
+                            <h3>Уравнение:</h3>
+                            <div class="equation-display" id="equation-display">
+                                <div class="placeholder">
+                                    <i class="fas fa-arrow-left"></i>
+                                    <p>Введите уравнение слева</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="solution-section">
+                            <h3>Решение:</h3>
+                            <div class="solution-content" id="solution-content">
+                                <div class="placeholder">
+                                    <i class="fas fa-robot"></i>
+                                    <p>Решение появится здесь</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Переменные (для систем) -->
+                        <div class="variables-container hidden" id="variables-container">
+                            <h3>Значения переменных:</h3>
+                            <div class="variables-grid" id="variables-grid"></div>
+                        </div>
+                        
+                        <!-- Числовая прямая (для неравенств) -->
+                        <div class="numberline-container hidden" id="numberline-container">
+                            <h3>Числовая прямая:</h3>
+                            <div class="numberline" id="numberline"></div>
+                        </div>
+                        
+                        <!-- Шаги решения -->
+                        <div class="steps-container hidden" id="steps-container">
+                            <h3>Шаги решения:</h3>
+                            <div class="steps-content" id="steps-content"></div>
+                        </div>
+                        
+                        <!-- График (опционально) -->
+                        <div class="graph-container hidden" id="graph-container">
+                            <h3>График:</h3>
+                            <canvas id="graph-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Информация о режимах -->
+                <div class="card info-card">
+                    <h3><i class="fas fa-info-circle"></i> Подсказки</h3>
+                    <div class="info-tabs">
+                        <button class="info-tab active" data-info="single">Уравнения</button>
+                        <button class="info-tab" data-info="system">Системы</button>
+                        <button class="info-tab" data-info="inequality">Неравенства</button>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-section single-info active">
+                            <ul class="info-list">
+                                <li><strong>Линейные:</strong> 2x + 3 = 7</li>
+                                <li><strong>Квадратные:</strong> x² - 4 = 0</li>
+                                <li><strong>Дроби:</strong> 1/2 + 1/3</li>
+                                <li><strong>Скобки:</strong> 3(x+2) = 15</li>
+                            </ul>
+                        </div>
+                        <div class="info-section system-info">
+                            <ul class="info-list">
+                                <li><strong>Формат:</strong> ax + by = c</li>
+                                <li><strong>Пример:</strong> 2x + y = 5</li>
+                                <li><strong>До 4 уравнений</strong></li>
+                                <li><strong>До 4 переменных</strong> (x, y, z, w)</li>
+                            </ul>
+                        </div>
+                        <div class="info-section inequality-info">
+                            <ul class="info-list">
+                                <li><strong>Знаки:</strong> > < ≥ ≤</li>
+                                <li><strong>Линейные:</strong> 2x + 3 > 7</li>
+                                <li><strong>Квадратные:</strong> x² < 4</li>
+                                <li><strong>Дробные:</strong> 1/x > 2</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Простой подвал -->
+        <footer class="footer">
+            <p>Zabaikin Calculator AI © 2026 | Решение уравнений, систем и неравенств</p>
+        </footer>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.7.0/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
